@@ -14,7 +14,7 @@ class SignUp(FlaskForm):
     password = PasswordField("Password: ", validators=[DataRequired()])
     name = StringField("First Name: ", validators=[DataRequired()])
     age = IntegerField("Age: ", validators=[DataRequired()])
-    gender = SelectField(u'Gender', choices=[('m', 'Male'), ('f', 'Female')])
+    gender = SelectField(u'Gender', choices=[('male', 'Male'), ('female', 'Female')])
     height = IntegerField("Height: ", validators=[DataRequired()])
     weight = IntegerField("Weight: ", validators=[DataRequired()])
     submit = SubmitField("Submit Sign Up")
