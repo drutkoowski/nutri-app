@@ -1,0 +1,21 @@
+<script>$(".jumbotron").css({ height: $(window).height() + "px" });
+
+$(window).on("resize", function() {
+  $(".jumbotron").css({ height: $(window).height() + "px" });
+});</script>
+<style>
+    .jumbotron {
+  color: white;
+  background-image: url("{{ url_for('static', filename='images/header-img.jpg') }}");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
+</style>
+<div class="jumbotron jumbotron-fluid d-flex align-items-center">
+  <div class="container text-center">
+    <p class="display-1">Eat smarter. Live better.</p>
+    <p class="display-4" style="color: #f8f9fa;">Being healthy starts with what you eat</p>
+  </div>
+</div>
