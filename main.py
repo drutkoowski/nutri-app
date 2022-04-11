@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from forms import SignUp, Login
+from forms import SignUp, Login, AddExercise, ProfileInfo, AddMeal
 
 
 
@@ -60,9 +60,9 @@ def signup():
         height_data = request.form.get("height")
         weight_data = request.form.get("weight")
         user = User.query.filter_by(email=email_data).first()
-        is_name = User.query.filter_by(name=name_data).first()
-        if user or is_name:
-            flash(f'User with these credentials already exists!', category="info")
+
+        if user:
+            flash(f'User with these credentials already exists!', category="warning")
             return render_template("signup.html", form=signup)
         else:
             hash_and_salted_password = generate_password_hash(
@@ -115,9 +115,56 @@ def login():
 
 @app.route("/logout")
 def logout():
-    flash(f'You logged out successfully!', category="warning")
+    flash(f'You logged out successfully!', category="info")
     logout_user()
     return redirect(url_for('home'))
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template("profilepage.html")
+
+@app.route("/profile/exercises")
+@login_required
+def exercises():
+    return render_template("exercises.html")
+
+@app.route("/profile/exercises/add")
+@login_required
+def add_exercises():
+    add_exercises = AddExercise()
+    return render_template("add_exercise.html", form=add_exercises)
+
+@app.route("/profile/exercises/show")
+@login_required
+def show_exercises():
+    return render_template("show_exercise.html")
+
+
+
+@app.route("/profile/info")
+@login_required
+def profile_info():
+    profileInfo = ProfileInfo()
+    return render_template("profile_info.html", form=profileInfo)
+
+
+@app.route("/profile/meals")
+@login_required
+def meals():
+    return render_template("meals.html")
+
+@app.route("/profile/meals/add")
+@login_required
+def add_meal():
+    meal_form = AddMeal()
+    return render_template("add_meal.html", form=meal_form)
+
+@app.route("/profile/meals/show")
+@login_required
+def show_meals():
+    return render_template("show_meal.html")
 # response = requests.get(API_ENDPOINT, headers=headers,params=params)
 # data = response.json()
 # print(data)
