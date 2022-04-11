@@ -7,12 +7,20 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
+                         {% with messages = get_flashed_messages(category_filter=["info"]) %}
+                                 {% if messages %}
+                                    {% for message in messages %}
+                             <li class="nav-item mx-0 mx-lg-1"><a class="faded-alert nav-link py-3 px-0 px-lg-3 rounded disabled" href="">{{message}}</a></li>
+
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
                         {% if not current_user.is_authenticated %}
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{url_for('signup')}}">Register</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{url_for('login')}}">Login</a></li>
                         {% endif %}
                         {% if current_user.is_authenticated %}
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{url_for('home')}}">{{current_user.name}}</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{url_for('profile')}}">{{current_user.name}}</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{url_for('logout')}}">Logout</a></li>
                         {% endif %}
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{url_for('home')}}#portfolio">Why Nutri?</a></li>

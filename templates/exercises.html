@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %} {{current_user.name}} Exercises{% endblock %}
+{% block styles %}
+{{super()}}
+
+{% endblock %}
+{% block content %}
+<div class="row mt-5"></div>
+<div class="row mt-5"></div>
+<div class="row mt-5"></div>
+<div class="container mt-5 mb-5">
+     <section class="text-success">
+            <div>
+                <h2 class="text-success text-center">Decide what you want to do using Nutri</h2>
+
+
+                <div class="row text-success text-center mt-5">
+                   <div class="col-md-6 col-lg-6 mb-5 mt-5 text-center">
+                       <a class="text-decoration-none" href="{{url_for('add_exercises')}}">
+                           <i class="fa-solid fa-circle-plus fa-5x text-success"></i>
+                            <h3 class="text-center text-success mt-4">Add exercises</h3>
+                       </a>
+                    </div>
+
+                     <div class="col-md-6 col-lg-6 mb-5 mt-5 text-center">
+                         <a class="text-decoration-none" href="{{url_for('show_exercises')}}">
+                           <i class="fa-solid fa-list fa-5x text-success"></i>
+                            <h3 class="text-center text-success mt-4">Show your exercises</h3>
+                         </a>
+                    </div>
+
+                </div>
+                 <div class="row text-success text-center mt-5">
+                        <div class="col-md-12 col-lg-12 mb-5 mt-5 text-center">
+                            <a class="text-decoration-none" href="{{url_for('profile')}}">
+                                <i class="fa-solid fa-angle-left fa-5x text-success"></i>
+                                <h3 class="text-center text-success mt-4">Back</h3>
+                            </a>
+                     </div>
+                 </div>
+            </div>
+        </section>
+</div>
+<div class="row mt-5"></div>
+<div class="row mt-5"></div>
+
+
+
+
+
+
+
+{% endblock %}
