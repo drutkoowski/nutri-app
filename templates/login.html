@@ -17,10 +17,26 @@
     <div class="mt-5 row"></div>
     <div class="mt-5 row"></div>
    <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4 text-success text-center">Log in to Nutri</h1>
-  </div>
-</div>
+      <div class="container">
+        <h1 class="display-4 text-success text-center">Log in to Nutri</h1>
+      </div>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="row">
+            <div class="col-md-4 col-lg-offset-4 ml-auto mr-auto">
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+                <button type="button" class="close" onclick="delete_flash(this)" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endwith %}
     <div id="login-Form" class="row mt-4">
     <div class="col-lg-offset-4 col-md-offset-4">
  {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "success"}) }}

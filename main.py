@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import requests
 import json
 
@@ -62,8 +62,8 @@ def signup():
         user = User.query.filter_by(email=email_data).first()
         is_name = User.query.filter_by(name=name_data).first()
         if user or is_name:
-            # flash(f'User with these credentials already exists!', category="info")
-            return render_template("register.html", form=signup)
+            flash(f'User with these credentials already exists!', category="info")
+            return render_template("signup.html", form=signup)
         else:
             hash_and_salted_password = generate_password_hash(
                 password_data,
@@ -79,19 +79,43 @@ def signup():
                 height=height_data,
                 weight=weight_data,
             )
+            flash(f'Welcome in Nutri {name_data}', category="info")
             dbmodels.adduser(new_user)
             login_user(new_user)
         return redirect(url_for('home'))
     return render_template("signup.html", form=signup)
 
-@app.route("/login")
+@app.route("/login", methods=["GET","POST"])
 def login():
     login = Login()
+    if request.method == "POST" and login.validate_on_submit():
+        email_data = request.form.get("email")
+        password_data = request.form.get("password")
+        user = User.query.filter_by(email=email_data).first()
+        user_exists = False
+        if user is None:
+            user_exists = False
+        elif user is not None:
+            user_exists = True
+        if user_exists:
+            is_password_right = check_password_hash(user.password, password_data)
+            if is_password_right:
+                flash(f'Welcome again {user.name}!', category="info")
+                login_user(user)
+                return redirect(url_for('home'))
+            elif not is_password_right:
+                flash(f'Provided credentials are not matching any account!', category="warning")
+                return render_template("login.html", form=login)
+        elif not user_exists:
+            flash(f'Provided credentials are not matching any account!', category="warning")
+            return render_template("login.html", form=login)
+
     return render_template("login.html", form=login)
 
 
 @app.route("/logout")
 def logout():
+    flash(f'You logged out successfully!', category="warning")
     logout_user()
     return redirect(url_for('home'))
 # response = requests.get(API_ENDPOINT, headers=headers,params=params)
