@@ -41,7 +41,10 @@ class User(UserMixin, db.Model):
     height = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
     calorie_eaten = db.Column(JsonEncodedDict)
+    eaten_details = db.Column(JsonEncodedDict)
     calorie_burnt = db.Column(JsonEncodedDict)
+    exercise_details = db.Column(JsonEncodedDict)
+
 
 
 def create_tables():
