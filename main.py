@@ -10,8 +10,6 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from forms import SignUp, Login, AddExercise, ProfileInfo, AddMeal
 
-
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "saj21#12da!s321@das*(aas$as6"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutridatabase.db'
@@ -23,20 +21,25 @@ login_manager.init_app(app)
 db = SQLAlchemy(app)
 API_KEY = "6ef17d9385fb15dc61e51ebb0047ec39"
 APP_ID = "9a3526fc"
-API_ENDPOINT = "https://trackapi.nutritionix.com/v2/natural/nutrients"
+API_ENDPOINT_MEALS = "https://trackapi.nutritionix.com/v2/natural/nutrients"
+API_ENDPOINT_EXERCISE = "https://trackapi.nutritionix.com/v2/natural/exercise"
+query = ""
 
 headers = {
     "x-app-id": APP_ID,
     "x-app-key": API_KEY,
 }
+
 params = {
-    "query": "3oz Apple",
+    "query": query,
     "x-remote-user-id": "0",
 }
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @app.route("/")
 def home():
@@ -44,8 +47,6 @@ def home():
     # calorie_burnt_json = json.dumps(calorie_burnt,indent=4)
 
     return render_template("index.html")
-
-
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -85,7 +86,8 @@ def signup():
         return redirect(url_for('home'))
     return render_template("signup.html", form=signup)
 
-@app.route("/login", methods=["GET","POST"])
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
     login = Login()
     if request.method == "POST" and login.validate_on_submit():
@@ -125,22 +127,47 @@ def logout():
 def profile():
     return render_template("profilepage.html")
 
+
 @app.route("/profile/exercises")
 @login_required
 def exercises():
     return render_template("exercises.html")
 
-@app.route("/profile/exercises/add")
+
+@app.route("/profile/exercises/add", methods=["GET","POST"])
 @login_required
 def add_exercises():
     add_exercises = AddExercise()
+    if request.method == "POST":
+        exercise_query = add_exercises.exercise_query.data
+        exercise_duration = add_exercises.exercise_duration.data
+        gender = current_user.gender
+        weight = current_user.weight
+        height = current_user.height
+        age = current_user.age
+        headers_exercise = {
+            "x-app-id": APP_ID,
+            "x-app-key": API_KEY,
+            "Content-Type": 'application/json',
+        }
+        params_exercise = {
+            "query": exercise_query,
+            "gender": gender,
+            "weight_kg": weight,
+            "height_cm": height,
+            "age": age,
+        }
+        json_object = json.dumps(params_exercise, indent=4)
+        response = requests.post(API_ENDPOINT_EXERCISE, headers=headers_exercise, data=json_object)
+        data = response.json()
+        print(data)
     return render_template("add_exercise.html", form=add_exercises)
+
 
 @app.route("/profile/exercises/show")
 @login_required
 def show_exercises():
     return render_template("show_exercise.html")
-
 
 
 @app.route("/profile/info")
@@ -155,19 +182,21 @@ def profile_info():
 def meals():
     return render_template("meals.html")
 
+
 @app.route("/profile/meals/add")
 @login_required
 def add_meal():
     meal_form = AddMeal()
     return render_template("add_meal.html", form=meal_form)
 
+
 @app.route("/profile/meals/show")
 @login_required
 def show_meals():
     return render_template("show_meal.html")
-# response = requests.get(API_ENDPOINT, headers=headers,params=params)
-# data = response.json()
-# print(data)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
