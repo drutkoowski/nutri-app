@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, IntegerField, SelectField
+from wtforms import StringField, SubmitField, PasswordField, IntegerField, SelectField, Label
 from wtforms.validators import DataRequired, Email
 
 
@@ -17,6 +17,9 @@ class SignUp(FlaskForm):
     gender = SelectField(u'Gender', choices=[('male', 'Male'), ('female', 'Female')])
     height = IntegerField("Height: ", validators=[DataRequired()])
     weight = IntegerField("Weight: ", validators=[DataRequired()])
+    activity_level = SelectField(u"How active are you?: ", choices=[('0', 'Sedentary'), ('1', 'Light activity'),
+                                                                  ('2', 'Moderate Activity'), ('3', 'Active'),
+                                                                    ('4', 'Very active')])
     submit = SubmitField("Submit Sign Up")
 
 
@@ -38,5 +41,5 @@ class AddExercise(FlaskForm):
 
 
 class AddMeal(FlaskForm):
-    meal_query = StringField("Describe what have you done today: ", validators=[DataRequired()])
-    submit = SubmitField("Submit Exercise")
+    meal_query = StringField("Describe what have you eaten today: ", validators=[DataRequired()])
+    submit = SubmitField("Submit meal")
