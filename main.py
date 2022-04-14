@@ -3,12 +3,12 @@ import requests
 import json
 from datetime import datetime
 import dbmodels
-from dbmodels import User, Exercise
+from dbmodels import User, Exercise, Meal
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from forms import SignUp, Login, AddExercise, ProfileInfo, AddMeal
+from forms import SignUp, Login, AddExercise, AddMeal
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "saj21#12da!s321@das*(aas$as6"
@@ -36,6 +36,33 @@ params = {
 }
 
 
+def calc_bmr(user):
+    if user.gender == "female":
+        BMR = 655.1 + (9.563 * user.weight) + (1.850 * user.height) - (4.676 * user.age)
+        return BMR
+    elif user.gender == "male":
+        BMR = 66.47 + (13.75 * user.weight) + (5.003 * user.height) - (6.755 * user.age)
+        return BMR
+
+
+def calc_amr(BMR, activity_level):
+    if activity_level == 0:
+        AMR = BMR * 1.2
+        return AMR
+    elif activity_level == 1:
+        AMR = BMR * 1.375
+        return AMR
+    elif activity_level == 2:
+        AMR = BMR * 1.55
+        return AMR
+    elif activity_level == 3:
+        AMR = BMR * 1.725
+        return AMR
+    elif activity_level == 4:
+        AMR = BMR * 1.9
+        return AMR
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -60,6 +87,7 @@ def signup():
         gender_data = request.form.get("gender")
         height_data = request.form.get("height")
         weight_data = request.form.get("weight")
+        activity_level = request.form.get("activity_level")
         user = User.query.filter_by(email=email_data).first()
 
         if user:
@@ -79,6 +107,7 @@ def signup():
                 gender=gender_data,
                 height=height_data,
                 weight=weight_data,
+                activity_level=activity_level,
             )
             flash(f'Welcome in Nutri {name_data}', category="info")
             dbmodels.add_to_datebase(new_user)
@@ -134,7 +163,7 @@ def exercises():
     return render_template("exercises.html")
 
 
-@app.route("/profile/exercises/add", methods=["GET","POST"])
+@app.route("/profile/exercises/add", methods=["GET", "POST"])
 @login_required
 def add_exercises():
     add_exercises = AddExercise()
@@ -166,10 +195,10 @@ def add_exercises():
         exercises_name = ''
         for exercise in data["exercises"]:
             calorie_summary = exercise['nf_calories'] + calorie_summary
-            exercises_name = exercises_name+exercise['name']+", "
+            exercises_name = exercises_name + exercise['name'] + ", "
         exercises_name_fixed = exercises_name[:-1]
-        exercise = Exercise(name=exercises_name_fixed,duration=exercise_duration,date=date_now,
-                            calories_burnt=round(calorie_summary),user_id=current_user.id)
+        exercise = Exercise(name=exercises_name_fixed, duration=exercise_duration, date=date_now,
+                            calories_burnt=round(calorie_summary), user_id=current_user.id)
         dbmodels.add_to_datebase(exercise)
 
         return redirect(url_for('exercises'))
@@ -186,8 +215,24 @@ def show_exercises():
 @app.route("/profile/info")
 @login_required
 def profile_info():
-    profileInfo = ProfileInfo()
-    return render_template("profile_info.html", form=profileInfo)
+    user = User.query.filter_by(id=current_user.id).first()
+    bmi = (user.weight / user.height / user.height) * 10000
+    bmi = round(bmi, 2)
+    calories_burnt_sum = 0
+    calories_eaten_sum = 0
+    cal_dif = 0
+    all_exercises = Exercise.query.filter_by(user_id=current_user.id).all()
+    all_meals = Meal.query.filter_by(user_id=current_user.id).all()
+    for exercise in all_exercises:
+        calories_burnt_sum = exercise.calories_burnt + calories_burnt_sum
+    for meal in all_meals:
+        calories_eaten_sum = meal.calories + calories_eaten_sum
+    cal_dif = round(calories_eaten_sum - calories_burnt_sum)
+    bmr = round(calc_bmr(user), 2)
+    activity_level = user.activity_level
+    amr = round(calc_amr(bmr, activity_level))
+    return render_template("profile_info.html", BMI=bmi, calories_burnt_sum=round(calories_burnt_sum), AMR=amr,
+                           calories_eaten_sum=round(calories_eaten_sum), cal_dif=cal_dif)
 
 
 @app.route("/profile/meals")
@@ -196,19 +241,62 @@ def meals():
     return render_template("meals.html")
 
 
-@app.route("/profile/meals/add")
+@app.route("/profile/meals/add", methods=["GET", "POST"])
 @login_required
 def add_meal():
-    meal_form = AddMeal()
-    return render_template("add_meal.html", form=meal_form)
+    add_meal = AddMeal()
+    if request.method == "POST":
+        meal_query = add_meal.meal_query.data
+        headers_exercise = {
+            "x-app-id": APP_ID,
+            "x-app-key": API_KEY,
+            "Content-Type": 'application/json',
+        }
+        params_exercise = {
+            "query": meal_query,
+        }
+        json_object = json.dumps(params_exercise, indent=4)
+        response = requests.post(API_ENDPOINT_MEALS, headers=headers_exercise, data=json_object)
+        data = response.json()
+        calories = 0
+        fat = 0
+        saturated_fat = 0
+        cholesterol = 0
+        sodium = 0
+        total_carbohydrate = 0
+        dietary_fiber = 0
+        sugars = 0
+        protein = 0
+        potassium = 0
+        now = datetime.now()
+        date_now = now.strftime("%Y/%m/%d")
+        for meal in data["foods"]:
+            calories = calories + meal["nf_calories"]
+            fat = fat + meal["nf_total_fat"]
+            saturated_fat = saturated_fat + meal["nf_saturated_fat"]
+            cholesterol = cholesterol + meal["nf_cholesterol"]
+            sodium = sodium + meal["nf_sodium"]
+            total_carbohydrate = total_carbohydrate + meal["nf_total_carbohydrate"]
+            dietary_fiber = dietary_fiber + meal["nf_dietary_fiber"]
+            sugars = sugars + meal["nf_sugars"]
+            protein = protein + meal["nf_protein"]
+            potassium = potassium + meal["nf_potassium"]
+
+        meal = Meal(name=meal_query, calories=round(calories), fat=fat, saturated_fat=saturated_fat,
+                    cholesterol=cholesterol, sodium=sodium, total_carbohydrate=total_carbohydrate,
+                    dietary_fiber=dietary_fiber, sugars=sugars,
+                    nf_protein=protein, nf_potassium=potassium, date=date_now, user_id=current_user.id)
+        dbmodels.add_to_datebase(meal)
+
+        return redirect(url_for('meals'))
+    return render_template("add_meal.html", form=add_meal)
 
 
 @app.route("/profile/meals/show")
 @login_required
 def show_meals():
-    return render_template("show_meal.html")
-
-
+    meals = Meal.query.filter_by(user_id=current_user.id).all()
+    return render_template("show_meal.html", meals=meals)
 
 
 if __name__ == '__main__':
