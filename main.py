@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import requests
 import json
-
+from datetime import datetime
 import dbmodels
-from dbmodels import User
+from dbmodels import User, Exercise
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 from flask_bootstrap import Bootstrap
@@ -81,7 +81,7 @@ def signup():
                 weight=weight_data,
             )
             flash(f'Welcome in Nutri {name_data}', category="info")
-            dbmodels.adduser(new_user)
+            dbmodels.add_to_datebase(new_user)
             login_user(new_user)
         return redirect(url_for('home'))
     return render_template("signup.html", form=signup)
@@ -161,13 +161,25 @@ def add_exercises():
         response = requests.post(API_ENDPOINT_EXERCISE, headers=headers_exercise, data=json_object)
         data = response.json()
         print(data)
+        calorie_summary = 0
+        now = datetime.now()
+        date_now = now.strftime("%Y/%m/%d")
+        exercises_name = ''
+        for exercise in data["exercises"]:
+            calorie_summary = exercise['nf_calories'] + calorie_summary
+            exercises_name = exercises_name + exercise['name']
+        exercise = Exercise(name=exercises_name,duration=exercise_duration,date=date_now,calories_burnt=calorie_summary,user_id=current_user.id)
+        dbmodels.add_to_datebase(exercise)
+
+        return redirect(url_for('exercises'))
     return render_template("add_exercise.html", form=add_exercises)
 
 
 @app.route("/profile/exercises/show")
 @login_required
 def show_exercises():
-    return render_template("show_exercise.html")
+    exercises = Exercise.query.filter_by(user_id=current_user.id).all()
+    return render_template("show_exercise.html", exercises=exercises)
 
 
 @app.route("/profile/info")
