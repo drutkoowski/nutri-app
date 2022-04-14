@@ -20,15 +20,19 @@
                     <th scope="col">Date</th>
                     <th scope="col">Calories Burnt</th>
                     <th scope="col">Exercises</th>
+                    <th scope="col">Duration(minutes)</th>
                 </tr>
               </thead>
               <tbody>
+              {% for exercise in exercises %}
                 <tr>
                   <th scope="row">1</th>
-                    <td>Date</td>
-                    <td>Calories Burnt</td>
-                    <td>Exercises</td>
+                    <td>{{exercise.date}}</td>
+                    <td>{{exercise.calories_burnt}}</td>
+                    <td>{{exercise.name}}</td>
+                    <td>{{exercise.duration}}</td>
                 </tr>
+              {% endfor %}
               </tbody>
             </table>
          </div>
