@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Email
 class Login(FlaskForm):
     email = StringField("Email: ", validators=[DataRequired(), Email()])
     password = PasswordField("Password: ", validators=[DataRequired()])
-    submit = SubmitField("Submit Login")
+    submit = SubmitField("Submit Login",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 
 class SignUp(FlaskForm):
@@ -20,7 +20,7 @@ class SignUp(FlaskForm):
     activity_level = SelectField(u"How active are you? ", choices=[('0', 'Sedentary'), ('1', 'Light activity'),
                                                                    ('2', 'Moderate Activity'), ('3', 'Active'),
                                                                    ('4', 'Very active')])
-    submit = SubmitField("Submit Sign Up")
+    submit = SubmitField("Submit Sign Up",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 
 class ProfileInfo(FlaskForm):
@@ -31,18 +31,18 @@ class ProfileInfo(FlaskForm):
     gender = SelectField(u'Gender', choices=[('male', 'Male'), ('female', 'Female')])
     height = IntegerField("Height: ", validators=[DataRequired()])
     weight = IntegerField("Weight: ", validators=[DataRequired()])
-    submit = SubmitField("Edit your profile info")
+    submit = SubmitField("Edit your profile info",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 
 class AddExercise(FlaskForm):
     exercise_query = StringField("Describe what have you done today: ", validators=[DataRequired()])
     exercise_duration = IntegerField("Duration in minutes: ", validators=[DataRequired()])
-    submit = SubmitField("Submit Exercise")
+    submit = SubmitField("Submit Exercise",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 
 class AddMeal(FlaskForm):
     meal_query = StringField("Describe what have you eaten today: ", validators=[DataRequired()])
-    submit = SubmitField("Submit meal")
+    submit = SubmitField("Submit meal",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 
 class EditForm(FlaskForm):
@@ -54,4 +54,4 @@ class EditForm(FlaskForm):
     activity_level = SelectField(u"How active are you? ", choices=[('0', 'Sedentary'), ('1', 'Light activity'),
                                                                    ('2', 'Moderate Activity'), ('3', 'Active'),
                                                                    ('4', 'Very active')])
-    submit = SubmitField("Edit your profile")
+    submit = SubmitField("Edit your profile",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
