@@ -42,12 +42,18 @@
             </div>
         </div>
              <div class="row text-success text-center">
-                        <div class="col-md-12 col-lg-12 mb-5 mt-5 text-center">
+                        <div class="col-md-6 col-lg-6 col-sm-6 mb-5 mt-5 text-center">
                             <a class="text-decoration-none" href="{{url_for('profile')}}">
                                 <i class="fa-solid fa-angle-left fa-5x text-success"></i>
                                 <h3 class="text-center text-success mt-4">Back</h3>
                             </a>
                      </div>
+                    <div class="col-md-6 col-lg-6 col-sm-6 mb-5 mt-5 text-center">
+                        <a class="text-decoration-none" href="{{url_for('edit_profile')}}">
+                                <i class="fa-solid fa-pen-to-square fa-5x text-success"></i>
+                                <h3 class="text-center text-success mt-4">Edit</h3>
+                            </a>
+                    </div>
                  </div>
 </div>
 {%  endblock content %}

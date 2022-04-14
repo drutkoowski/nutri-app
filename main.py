@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from forms import SignUp, Login, AddExercise, AddMeal
+from forms import SignUp, Login, AddExercise, AddMeal, EditForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "saj21#12da!s321@das*(aas$as6"
@@ -291,6 +291,29 @@ def add_meal():
         return redirect(url_for('meals'))
     return render_template("add_meal.html", form=add_meal)
 
+@app.route("/profile/edit", methods=["GET","POST"])
+@login_required
+def edit_profile():
+
+    editform = EditForm()
+    user = User.query.filter_by(id=current_user.id).first()
+    if request.method == "POST":
+        user.height = editform.height.data
+        user.weight = editform.weight.data
+        user.age = editform.age.data
+        user.gender = editform.gender.data
+        user.name = editform.name.data
+        user.activity_level = int(editform.activity_level.data)
+        db.session.merge(user)
+        db.session.commit()
+        return redirect(url_for('profile_info'))
+    editform.height.data = user.height
+    editform.weight.data = user.weight
+    editform.age.data = user.age
+    editform.gender.data = user.gender
+    editform.name.data = user.name
+    editform.activity_level.data = user.activity_level
+    return render_template("edit_profile.html", form=editform)
 
 @app.route("/profile/meals/show")
 @login_required
