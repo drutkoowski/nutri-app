@@ -160,15 +160,16 @@ def add_exercises():
         json_object = json.dumps(params_exercise, indent=4)
         response = requests.post(API_ENDPOINT_EXERCISE, headers=headers_exercise, data=json_object)
         data = response.json()
-        print(data)
         calorie_summary = 0
         now = datetime.now()
         date_now = now.strftime("%Y/%m/%d")
         exercises_name = ''
         for exercise in data["exercises"]:
             calorie_summary = exercise['nf_calories'] + calorie_summary
-            exercises_name = exercises_name + exercise['name']
-        exercise = Exercise(name=exercises_name,duration=exercise_duration,date=date_now,calories_burnt=calorie_summary,user_id=current_user.id)
+            exercises_name = exercises_name+exercise['name']+", "
+        exercises_name_fixed = exercises_name[:-1]
+        exercise = Exercise(name=exercises_name_fixed,duration=exercise_duration,date=date_now,
+                            calories_burnt=round(calorie_summary),user_id=current_user.id)
         dbmodels.add_to_datebase(exercise)
 
         return redirect(url_for('exercises'))
