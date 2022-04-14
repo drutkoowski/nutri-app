@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %} {{current_user.name}} Exercises{% endblock %}
+{% block title %} {{current_user.name}} - Nutri Meals{% endblock %}
 {% block styles %}
 {{super()}}
 
@@ -11,24 +11,45 @@
 <div class="row mt-5"></div>
 <div class="container mt-5 mb-5">
 
-     <section class="text-success">
+    <section class="text-success">
          <div>
            <table class="table table-success">
               <thead>
                 <tr>
                   <th scope="col">#</th>
                     <th scope="col">Date</th>
-                    <th scope="col">Calories Eaten</th>
-                    <th scope="col">Meal</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Calories</th>
+                    <th scope="col">Fat</th>
+                    <th scope="col">Saturated Fat</th>
+                    <th scope="col">Cholesterol</th>
+                    <th scope="col">Sodium</th>
+                    <th scope="col">Total Carbohydrates</th>
+                    <th scope="col">Dietary Fiber</th>
+                    <th scope="col">Sugars</th>
+                    <th scope="col">Protein</th>
+                    <th scope="col">Potassium</th>
                 </tr>
               </thead>
               <tbody>
+              {% for meal in meals %}
                 <tr>
                   <th scope="row">1</th>
-                    <td>Date</td>
-                    <td>Calories Eaten</td>
-                    <td>Meal</td>
+                    <td>{{meal.date}}</td>
+                    <td>{{meal.name}}</td>
+                    <td>{{meal.calories}}</td>
+                    <td>{{meal.fat}}</td>
+                    <td>{{meal.saturated_fat}}</td>
+                    <td>{{meal.cholesterol}}</td>
+                    <td>{{meal.sodium}}</td>
+                    <td>{{meal.total_carbohydrate}}</td>
+                    <td>{{meal.dietary_fiber}}</td>
+                    <td>{{meal.sugars}}</td>
+                    <td>{{meal.nf_protein}}</td>
+                    <td>{{meal.nf_potassium}}</td>
+
                 </tr>
+              {% endfor %}
               </tbody>
             </table>
          </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %} Join to Nutri {% endblock %}
+{% block title %} {{current_user.name}} - Nutri profile{% endblock %}
 {% block styles %}
 {{super()}}
 {% endblock %}
@@ -19,7 +19,26 @@
     </div>
         <div class="row mt-2">
             <div class="col-lg-offset-4 col-md-offset-4 mb-2">
-         {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "success"}) }}
+                    <h3 class="fw-lighter mt-2">First name: {{current_user.name}}</h3>
+                <hr class="text-success col-3">
+                    <h3 class="fw-lighter mt-2">Age: <p class="text-success d-inline-block">{{current_user.age}}</p></h3>
+               <hr class="text-success col-2">
+                    <h3 class="fw-lighter mt-2">Gender: <p class="text-success d-inline-block">{{current_user.gender}}</p></h3>
+                <hr class="text-success col-2">
+                    <h3 class="fw-lighter mt-2">Height: <p class="text-success d-inline-block">{{current_user.height}}</p></h3>
+                <hr class="text-success col-2">
+                    <h3 class="fw-lighter mt-2">Weight: <p class="text-success d-inline-block">{{current_user.weight}}</p></h3>
+               <hr class="text-success col-2">
+                    <h3 class="fw-lighter mt-2">BMI: <p class="text-success d-inline-block">{{BMI}}</p></h3>
+                <hr class="text-success col-2">
+                    <h3 class="fw-lighter mt-2">Calories burnt using Nutri: <p class="text-success d-inline-block">{{calories_burnt_sum}} kcal</p></h3>
+                <hr class="text-success col-5">
+                    <h3 class="fw-lighter mt-2">Calories eaten with Nutri: <p class="text-success d-inline-block">{{calories_eaten_sum}} kcal</p></h3>
+                <hr class="text-success col-5">
+                    <h3 class="fw-lighter mt-2">Your calorie requirement: <p class="text-success d-inline-block">{{AMR}} kcal</p></h3>
+                <hr class="text-success col-5">
+                    <h3 class="fw-lighter mt-2">Summary calorific difference: <p class="text-success d-inline-block">{{cal_dif}} kcal</p></h3>
+
             </div>
         </div>
              <div class="row text-success text-center">
