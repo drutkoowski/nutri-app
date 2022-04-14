@@ -20,14 +20,31 @@ class User(UserMixin, db.Model):
     gender = db.Column(db.String(10), nullable=False)
     height = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
+    activity_level = db.Column(db.Integer)
     exercises = db.relationship('Exercise', backref="user")
-
+    meals = db.relationship('Meal', backref="user")
 
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
     duration = db.Column(db.Integer)
     calories_burnt = db.Column(db.Integer)
+    date = db.Column(db.String(10))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class Meal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300))
+    calories = db.Column(db.Integer)
+    fat = db.Column(db.Integer)
+    saturated_fat = db.Column(db.Integer)
+    cholesterol = db.Column(db.Integer)
+    sodium = db.Column(db.Integer)
+    total_carbohydrate = db.Column(db.Integer)
+    dietary_fiber = db.Column(db.Integer)
+    sugars = db.Column(db.Integer)
+    nf_protein = db.Column(db.Integer)
+    nf_potassium = db.Column(db.Integer)
     date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
