@@ -22,32 +22,22 @@
 <div class="row mt-5"></div>
 <div class="container mt-5 mb-5">
 {% if exercises %}
-     <section class="text-success">
-         <div>
-           <table class="table table-success">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Calories Burnt</th>
-                    <th scope="col">Exercises</th>
-                    <th scope="col">Duration(minutes)</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for exercise in exercises %}
-                <tr>
-                  <th scope="row">1</th>
-                    <td>{{exercise.date}}</td>
-                    <td>{{exercise.calories_burnt}}</td>
-                    <td>{{exercise.name}}</td>
-                    <td>{{exercise.duration}}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-         </div>
-        </section>
+    {% for exercise in exercises[::-1] %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-success">
+            <i class="fa-solid fa-calendar-day"></i>
+            {{exercise.date}}: {{exercise.name}}
+        </h2>
+         <details class="text-success">
+                      <summary>More details</summary>
+                        <p class="mt-1">Duration: {{exercise.duration}} minutes</p>
+                       <p>Calories burnt: {{exercise.calories_burnt}} kcal</p>
+                     </details>
+                <hr>
+    </div>
+</div>
+    {% endfor %}
     {% else %}
     <h2 class="text-center text-success">No exercises to show yet</h2>
      {% endif %}

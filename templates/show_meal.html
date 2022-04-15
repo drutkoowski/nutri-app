@@ -22,51 +22,32 @@
 <div class="row mt-5"></div>
 <div class="container mt-5 mb-5">
 {% if meals %}
-    <section class="text-success">
-         <div>
-           <table class="table table-success">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Calories</th>
-                    <th scope="col">Fat</th>
-                    <th scope="col">Saturated Fat</th>
-                    <th scope="col">Cholesterol</th>
-                    <th scope="col">Sodium</th>
-                    <th scope="col">Total Carbohydrates</th>
-                    <th scope="col">Dietary Fiber</th>
-                    <th scope="col">Sugars</th>
-                    <th scope="col">Protein</th>
-                    <th scope="col">Potassium</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for meal in meals %}
-                <tr>
-                  <th scope="row">1</th>
-                    <td>{{meal.date}}</td>
-                    <td>{{meal.name}}</td>
-                    <td>{{meal.calories}}</td>
-                    <td>{{meal.fat}}</td>
-                    <td>{{meal.saturated_fat}}</td>
-                    <td>{{meal.cholesterol}}</td>
-                    <td>{{meal.sodium}}</td>
-                    <td>{{meal.total_carbohydrate}}</td>
-                    <td>{{meal.dietary_fiber}}</td>
-                    <td>{{meal.sugars}}</td>
-                    <td>{{meal.nf_protein}}</td>
-                    <td>{{meal.nf_potassium}}</td>
-
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-         </div>
-        </section>
+    {% for meal in meals[::-1] %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-success display-5">
+            <i class="fa-solid fa-calendar-day"></i>
+            {{meal.date}}: {{meal.name}}
+        </h2>
+         <details class="text-success">
+                      <summary>More details</summary>
+                       <p>Calories: {{meal.calories}} kcal</p>
+                        <p>Fat: {{meal.fat}}</p>
+                        <p>Saturated fat: {{meal.saturated_fat}}</p>
+                        <p>Cholesterol: {{meal.cholesterol}}</p>
+                        <p>Sodium: {{meal.sodium}}</p>
+                        <p>Carbohydrates: {{meal.total_carbohydrate}}</p>
+                        <p>Dietary fiber: {{meal.dietary_fiber}}</p>
+                        <p>Sugars: {{meal.sugars}}</p>
+                        <p>Protein: {{meal.nf_protein}}</p>
+                        <p>Potassium: {{meal.nf_potassium}}</p>
+                     </details>
+                <hr>
+    </div>
+</div>
+    {% endfor %}
     {% else %}
-    <h2 class="text-center text-success">No meals to show yet</h2>
+    <h2 class="text-center text-success">No exercises to show yet</h2>
      {% endif %}
       <div class="row text-success text-center mt-5">
                         <div class="col-md-12 col-lg-12 mb-5 mt-5 text-center">
