@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask import Flask
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "saj21#12da!s321@das*(aas$as6"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutridatabase.db'
@@ -23,6 +22,8 @@ class User(UserMixin, db.Model):
     activity_level = db.Column(db.Integer)
     exercises = db.relationship('Exercise', backref="user")
     meals = db.relationship('Meal', backref="user")
+    reviews = db.relationship('Review', backref="user")
+
 
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +32,17 @@ class Exercise(db.Model):
     calories_burnt = db.Column(db.Integer)
     date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    desc = db.Column(db.String)
+    overall_rate = db.Column(db.Integer)
+    simplicity_rate = db.Column(db.Integer)
+    features_rate = db.Column(db.Integer)
+    date = db.Column(db.String(10))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +60,9 @@ class Meal(db.Model):
     date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+
 db.create_all()
+
 
 def create_tables():
     db.create_all()

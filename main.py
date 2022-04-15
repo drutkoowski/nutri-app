@@ -3,7 +3,7 @@ import requests
 import json
 from datetime import datetime
 import dbmodels
-from dbmodels import User, Exercise, Meal
+from dbmodels import User, Exercise, Meal, Review
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 from flask_bootstrap import Bootstrap
@@ -172,40 +172,44 @@ def exercises():
 def add_exercises():
     add_exercises = AddExercise()
     if request.method == "POST":
-        exercise_query = add_exercises.exercise_query.data
-        exercise_duration = add_exercises.exercise_duration.data
-        gender = current_user.gender
-        weight = current_user.weight
-        height = current_user.height
-        age = current_user.age
-        headers_exercise = {
-            "x-app-id": APP_ID,
-            "x-app-key": API_KEY,
-            "Content-Type": 'application/json',
-        }
-        params_exercise = {
-            "query": exercise_query,
-            "gender": gender,
-            "weight_kg": weight,
-            "height_cm": height,
-            "age": age,
-        }
-        json_object = json.dumps(params_exercise, indent=4)
-        response = requests.post(API_ENDPOINT_EXERCISE, headers=headers_exercise, data=json_object)
-        data = response.json()
-        calorie_summary = 0
-        now = datetime.now()
-        date_now = now.strftime("%Y/%m/%d")
-        exercises_name = ''
-        for exercise in data["exercises"]:
-            calorie_summary = exercise['nf_calories'] + calorie_summary
-            exercises_name = exercises_name + exercise['name'].title() + ", "
-        exercises_name_fixed = exercises_name[:-2]
-        exercise = Exercise(name=exercises_name_fixed, duration=exercise_duration, date=date_now,
-                            calories_burnt=round(calorie_summary), user_id=current_user.id)
-        dbmodels.add_to_datebase(exercise)
+        try:
+            exercise_query = add_exercises.exercise_query.data
+            exercise_duration = add_exercises.exercise_duration.data
+            gender = current_user.gender
+            weight = current_user.weight
+            height = current_user.height
+            age = current_user.age
+            headers_exercise = {
+                "x-app-id": APP_ID,
+                "x-app-key": API_KEY,
+                "Content-Type": 'application/json',
+            }
+            params_exercise = {
+                "query": exercise_query,
+                "gender": gender,
+                "weight_kg": weight,
+                "height_cm": height,
+                "age": age,
+            }
+            json_object = json.dumps(params_exercise, indent=4)
+            response = requests.post(API_ENDPOINT_EXERCISE, headers=headers_exercise, data=json_object)
+            data = response.json()
+            calorie_summary = 0
+            now = datetime.now()
+            date_now = now.strftime("%Y/%m/%d")
+            exercises_name = ''
+            for exercise in data["exercises"]:
+                calorie_summary = exercise['nf_calories'] + calorie_summary
+                exercises_name = exercises_name + exercise['name'].title() + ", "
+            exercises_name_fixed = exercises_name[:-2]
+            exercise = Exercise(name=exercises_name_fixed, duration=exercise_duration, date=date_now,
+                                calories_burnt=round(calorie_summary), user_id=current_user.id)
+            dbmodels.add_to_datebase(exercise)
 
-        return redirect(url_for('exercises'))
+            return redirect(url_for('exercises'))
+        except:
+            flash("We couldn't match any of your exercises, try again.")
+            return render_template("add_exercise.html", form=add_exercises)
     return render_template("add_exercise.html", form=add_exercises)
 
 
@@ -262,7 +266,6 @@ def add_meal():
         json_object = json.dumps(params_exercise, indent=4)
         response = requests.post(API_ENDPOINT_MEALS, headers=headers_exercise, data=json_object)
         data = response.json()
-        print(data)
         calories = 0
         fat = 0
         saturated_fat = 0
@@ -298,7 +301,7 @@ def add_meal():
                 if meal["nf_potassium"] is not None:
                     potassium = potassium + meal["nf_potassium"]
         except KeyError:
-            flash("We couldn't match any of your foods")
+            flash("We couldn't match any of your foods, try again.")
             return render_template("add_meal.html", form=add_meal)
 
         meal = Meal(name=meal_query, calories=round(calories), fat=fat, saturated_fat=saturated_fat,
@@ -340,6 +343,22 @@ def show_meals():
     meals = Meal.query.filter_by(user_id=current_user.id).all()
     return render_template("show_meal.html", meals=meals)
 
+@app.route("/review/add", methods=["GET","POST"])
+@login_required
+def add_review():
+    if request.method == "POST":
+        desc = request.form.get('desc')
+        overall_rate = request.form.getlist('rating')
+        simplicity_rate = request.form.getlist('rating_s')
+        features_rate = request.form.getlist('rating_f')
+        now = datetime.now()
+        date_now = now.strftime("%Y/%m/%d")
+        review = Review(desc=desc,overall_rate=overall_rate[0],simplicity_rate=simplicity_rate[0],features_rate=features_rate[0],
+                        date=date_now,user_id=current_user.id)
+        dbmodels.add_to_datebase(review)
+
+        return redirect(url_for('profile_info'))
+    return render_template("add_review.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

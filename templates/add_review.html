@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %} {{current_user.name}} - Nutri Exercises{% endblock %}
+{% block styles %}
+{{super()}}
+<style>
+          body {
+              display: flex;
+              flex-direction: column;
+              min-height: 100vh;
+            }
+          .footer-one-page {
+              background-color: #efefef;
+              flex: 0 0 50px;/*or just height:50px;*/
+              margin-top: auto;
+            }
+          .rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start
+}
+
+.rating>input {
+    display: none
+}
+
+.rating>label {
+    position: relative;
+    width: 1em;
+    font-size: 3vw;
+    color: #FFD600;
+    cursor: pointer;
+
+}
+
+
+
+.rating>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating>label:hover:before,
+.rating>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating>input:checked~label:before {
+    opacity: 1
+}
+
+.rating:hover>input:checked~label:before {
+    opacity: 0.4
+}
+
+
+          .rating_s {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start
+}
+
+.rating_s>input {
+    display: none
+}
+
+.rating_s>label {
+    position: relative;
+    width: 1em;
+    font-size: 3vw;
+    color: #FFD600;
+    cursor: pointer;
+
+}
+
+
+
+.rating_s>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating_s>label:hover:before,
+.rating_s>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating_s>input:checked~label:before {
+    opacity: 1
+}
+
+.rating_s:hover>input:checked~label:before {
+    opacity: 0.4
+}
+@media only screen and (max-width: 600px) {
+    h1 {
+        font-size: 14px
+    }
+
+    p {
+        font-size: 12px
+    }
+}
+    </style>
+{% endblock %}
+{% block content %}
+<div class="row mt-5"></div>
+<div class="row mt-5"></div>
+<div class="row mt-5"></div>
+<div class="container mt-5 mb-5">
+     <section class="text-success">
+           {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="row faded-alert">
+            <div class="col-md-12 col-lg-12 col-sm-12 mr-auto display-4 text-center">
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+            </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <h3 class="display-6">Review</h3>
+         <form action="{{url_for('add_review')}}" method="post">
+            <div class="display-6 text-success">
+            <input class="form-control form-control-lg" type="text" name="desc" placeholder="Your review description">
+             </div>
+             <h3 class="mt-3 display-6">Overall experience </h3>
+            <div class="rating p-0"> <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label> <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+            </div>
+              <h3 class="mt-3 display-6">Simplicity </h3>
+            <div class="rating p-0"> <input type="radio" name="rating_s" value="5" id="5_s"><label for="5_s">☆</label> <input type="radio" name="rating_s" value="4" id="4_s"><label for="4_s">☆</label> <input type="radio" name="rating_s" value="3" id="3_s"><label for="3_s">☆</label> <input type="radio" name="rating_s" value="2" id="2_s"><label for="2_s">☆</label> <input type="radio" name="rating_s" value="1" id="1_s"><label for="1_s">☆</label>
+            </div>
+             <h3 class="mt-3 display-6">Features </h3>
+            <div class="rating p-0"> <input type="radio" name="rating_f" value="5" id="5_f"><label for="5_f">☆</label> <input type="radio" name="rating_f" value="4" id="4_f"><label for="4_f">☆</label> <input type="radio" name="rating_f" value="3" id="3_f"><label for="3_f">☆</label> <input type="radio" name="rating_f" value="2" id="2_f"><label for="2_f">☆</label> <input type="radio" name="rating_f" value="1" id="1_f"><label for="1_f">☆</label>
+            </div>
+               <button type="submit" class="btn btn-success mt-3 w-25">Submit</button>
+             </form>
+
+        </section>
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}

@@ -23,6 +23,19 @@
 <div class="container mt-5 mb-5">
      <section class="text-success">
             <div>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="row faded-alert">
+            <div class="col-md-12 col-lg-12 col-sm-12 mr-auto display-4 text-center">
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+            </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endwith %}
             {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "success"}) }}
             </div>
 
