@@ -78,6 +78,8 @@ def home():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     signup = SignUp()
     if request.method == "POST" and signup.validate_on_submit():
         email_data = request.form.get("email")
@@ -118,6 +120,8 @@ def signup():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     login = Login()
     if request.method == "POST" and login.validate_on_submit():
         email_data = request.form.get("email")
@@ -195,8 +199,8 @@ def add_exercises():
         exercises_name = ''
         for exercise in data["exercises"]:
             calorie_summary = exercise['nf_calories'] + calorie_summary
-            exercises_name = exercises_name + exercise['name'] + ", "
-        exercises_name_fixed = exercises_name[:-1]
+            exercises_name = exercises_name + exercise['name'].title() + ", "
+        exercises_name_fixed = exercises_name[:-2]
         exercise = Exercise(name=exercises_name_fixed, duration=exercise_duration, date=date_now,
                             calories_burnt=round(calorie_summary), user_id=current_user.id)
         dbmodels.add_to_datebase(exercise)
@@ -258,6 +262,7 @@ def add_meal():
         json_object = json.dumps(params_exercise, indent=4)
         response = requests.post(API_ENDPOINT_MEALS, headers=headers_exercise, data=json_object)
         data = response.json()
+        print(data)
         calories = 0
         fat = 0
         saturated_fat = 0
@@ -270,17 +275,31 @@ def add_meal():
         potassium = 0
         now = datetime.now()
         date_now = now.strftime("%Y/%m/%d")
-        for meal in data["foods"]:
-            calories = calories + meal["nf_calories"]
-            fat = fat + meal["nf_total_fat"]
-            saturated_fat = saturated_fat + meal["nf_saturated_fat"]
-            cholesterol = cholesterol + meal["nf_cholesterol"]
-            sodium = sodium + meal["nf_sodium"]
-            total_carbohydrate = total_carbohydrate + meal["nf_total_carbohydrate"]
-            dietary_fiber = dietary_fiber + meal["nf_dietary_fiber"]
-            sugars = sugars + meal["nf_sugars"]
-            protein = protein + meal["nf_protein"]
-            potassium = potassium + meal["nf_potassium"]
+        try:
+            for meal in data["foods"]:
+                if meal["nf_calories"] is not None:
+                    calories = calories + meal["nf_calories"]
+                if meal["nf_total_fat"] is not None:
+                    fat = fat + meal["nf_total_fat"]
+                if meal["nf_saturated_fat"] is not None:
+                    saturated_fat = saturated_fat + meal["nf_saturated_fat"]
+                if meal["nf_cholesterol"] is not None:
+                    cholesterol = cholesterol + meal["nf_cholesterol"]
+                if meal["nf_sodium"] is not None:
+                    sodium = sodium + meal["nf_sodium"]
+                if meal["nf_total_carbohydrate"] is not None:
+                    total_carbohydrate = total_carbohydrate + meal["nf_total_carbohydrate"]
+                if meal["nf_dietary_fiber"] is not None:
+                    dietary_fiber = dietary_fiber + meal["nf_dietary_fiber"]
+                if meal["nf_sugars"] is not None:
+                    sugars = sugars + meal["nf_sugars"]
+                if meal["nf_protein"] is not None:
+                    protein = protein + meal["nf_protein"]
+                if meal["nf_potassium"] is not None:
+                    potassium = potassium + meal["nf_potassium"]
+        except KeyError:
+            flash("We couldn't match any of your foods")
+            return render_template("add_meal.html", form=add_meal)
 
         meal = Meal(name=meal_query, calories=round(calories), fat=fat, saturated_fat=saturated_fat,
                     cholesterol=cholesterol, sodium=sodium, total_carbohydrate=total_carbohydrate,
