@@ -15,7 +15,18 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
          <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
         <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
-
+    <style>
+          body {
+              display: flex;
+              flex-direction: column;
+              min-height: 100vh;
+            }
+                  .footer-one-page {
+              background-color: #efefef;
+              flex: 0 0 50px;/*or just height:50px;*/
+              margin-top: auto;
+            }
+    </style>
     {% endblock %}
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 
@@ -24,7 +35,7 @@
     {% include 'nav.html' %}
     {% block header %} {% endblock %}
     {% block content %}
-
-
     {% endblock %}
-{% include 'footer.html' %}
+ {% include 'footer_one_page.html' %}
+
+

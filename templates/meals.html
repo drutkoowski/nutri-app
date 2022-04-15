@@ -3,7 +3,18 @@
 {% block title %} {{current_user.name}} - Nutri Exercises{% endblock %}
 {% block styles %}
 {{super()}}
-
+<style>
+          body {
+              display: flex;
+              flex-direction: column;
+              min-height: 100vh;
+            }
+          .footer-one-page {
+              background-color: #efefef;
+              flex: 0 0 50px;/*or just height:50px;*/
+              margin-top: auto;
+            }
+    </style>
 {% endblock %}
 {% block content %}
 <div class="row mt-5"></div>
@@ -44,12 +55,4 @@
             </div>
         </section>
 </div>
-<div class="row mt-5"></div>
-<div class="row mt-5"></div>
-
-
-
-
-
-
 {% endblock %}

@@ -3,6 +3,18 @@
 {% block title %} {{current_user.name}} - Edit Nutri {% endblock %}
 {% block styles %}
 {{super()}}
+<style>
+          body {
+              display: flex;
+              flex-direction: column;
+              min-height: 100vh;
+            }
+          .footer-one-page {
+              background-color: #efefef;
+              flex: 0 0 50px;/*or just height:50px;*/
+              margin-top: auto;
+            }
+    </style>
 {% endblock %}
 
 <!-- Main Content -->

@@ -4,22 +4,22 @@ from wtforms.validators import DataRequired, Email
 
 
 class Login(FlaskForm):
-    email = StringField("Email: ", validators=[DataRequired(), Email()])
-    password = PasswordField("Password: ", validators=[DataRequired()])
+    email = StringField("Email: ", validators=[DataRequired(), Email()],render_kw={'placeholder':'Enter your email','style':'font-size:1.5em;'})
+    password = PasswordField(validators=[DataRequired()],render_kw={'placeholder':'Enter your password','style':'font-size:1.5em;'})
     submit = SubmitField("Submit Login",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 
 class SignUp(FlaskForm):
-    email = StringField("Email: ", validators=[DataRequired(), Email()])
-    password = PasswordField("Password: ", validators=[DataRequired()])
-    name = StringField("First Name: ", validators=[DataRequired()])
-    age = IntegerField("Age: ", validators=[DataRequired()])
-    gender = SelectField(u'Gender', choices=[('male', 'Male'), ('female', 'Female')])
-    height = IntegerField("Height (cm): ", validators=[DataRequired()])
-    weight = IntegerField("Weight (kg): ", validators=[DataRequired()])
+    email = StringField("Email: ", validators=[DataRequired(), Email()],render_kw={'placeholder':'Enter your email','style':'font-size:1.5em;'})
+    password = PasswordField("Password: ", validators=[DataRequired()],render_kw={'placeholder':'Enter your password','style':'font-size:1.5em;'})
+    name = StringField("First Name: ", validators=[DataRequired()],render_kw={'placeholder':'Enter your first name','style':'font-size:1.5em;'})
+    age = IntegerField("Age: ", validators=[DataRequired()],render_kw={'placeholder':'Enter your age','style':'font-size:1.5em;'})
+    gender = SelectField(u'Gender', choices=[('male', 'Male'), ('female', 'Female')],render_kw={'style':'font-size:1.5em;'})
+    height = IntegerField("Height (cm): ", validators=[DataRequired()],render_kw={'placeholder':'Enter your height (cm)','style':'font-size:1.5em;'})
+    weight = IntegerField("Weight (kg): ", validators=[DataRequired()],render_kw={'placeholder':'Enter your weight (kg)','style':'font-size:1.5em;'})
     activity_level = SelectField(u"How active are you? ", choices=[('0', 'Sedentary'), ('1', 'Light activity'),
                                                                    ('2', 'Moderate Activity'), ('3', 'Active'),
-                                                                   ('4', 'Very active')])
+                                                                   ('4', 'Very active')],render_kw={'style':'font-size:1.5em;'})
     submit = SubmitField("Submit Sign Up",render_kw={'style':'font-size:1.5em;margin-top:1rem!important;'})
 
 

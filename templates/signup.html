@@ -3,6 +3,18 @@
 {% block title %} Join to Nutri {% endblock %}
 {% block styles %}
 {{super()}}
+ <style>
+          body {
+              display: flex;
+              flex-direction: column;
+              min-height: 100vh;
+            }
+                  .footer-one-page {
+              background-color: #efefef;
+              flex: 0 0 50px;/*or just height:50px;*/
+              margin-top: auto;
+            }
+    </style>
 {% endblock %}
 
 <!-- Main Content -->
@@ -13,7 +25,7 @@
     <div class="row mt-5" ></div>
     <div class="row mt-5" ></div>
     <div class="jumbotron jumbotron-fluid">
-          <div class="container">
+          <div>
             <h1 class="display-4 text-success text-center">Sign up to Nutri</h1>
           </div>
     </div>
@@ -30,12 +42,14 @@
             {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="row mt-2">
+        <div class="row mt-2 mb-5">
             <div class="col-lg-offset-4 col-md-offset-4 mb-2">
          {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "success"}) }}
             </div>
         </div>
-            <div class="row mt-5" ></div>
-        </div>
+</div>
+
 {%  endblock content %}
+
+
 
