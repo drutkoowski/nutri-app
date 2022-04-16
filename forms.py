@@ -55,7 +55,7 @@ class AddExercise(FlaskForm):
 
 class AddMeal(FlaskForm):
     meal_query = StringField("Describe what have you eaten today: ", validators=[DataRequired()], render_kw={
-        'placeholder': 'For example: Big Mac Mc.Donalds, 85g bananas and 20g cheesecake', 'style': 'font-size:1.5em;'})
+        'placeholder': 'For example: One apple with a teaspoon of peanut butter', 'style': 'font-size:1.5em;'})
     submit = SubmitField("Submit meal", render_kw={'style': 'font-size:1.5em;margin-top:1rem!important;'})
 
 
