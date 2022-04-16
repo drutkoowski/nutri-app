@@ -42,7 +42,7 @@ class Review(db.Model):
     features_rate = db.Column(db.Integer)
     date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+    user_name = db.Column(db.String)
 
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)

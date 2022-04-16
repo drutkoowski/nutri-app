@@ -6,6 +6,8 @@
 //
 // Scripts
 //
+
+
 ! function(e) {
     "use strict";
     "function" == typeof define && define.amd ? define(["jquery"], e) : "object" == typeof module && module.exports ? module.exports = e(require("jquery")) : e(window.jQuery)

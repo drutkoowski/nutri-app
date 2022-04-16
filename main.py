@@ -70,10 +70,9 @@ def load_user(user_id):
 
 @app.route("/")
 def home():
-    # calorie_eaten_json = json.dumps(calorie_eaten, indent=4)
-    # calorie_burnt_json = json.dumps(calorie_burnt,indent=4)
-
-    return render_template("index.html")
+    reviews = Review.query.filter(Review.id > 1).all()
+    reviews_1 = Review.query.filter_by(id=1).first()
+    return render_template("index.html", reviews=reviews, review_1=reviews_1)
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -354,7 +353,7 @@ def add_review():
         now = datetime.now()
         date_now = now.strftime("%Y/%m/%d")
         review = Review(desc=desc,overall_rate=overall_rate[0],simplicity_rate=simplicity_rate[0],features_rate=features_rate[0],
-                        date=date_now,user_id=current_user.id)
+                        date=date_now,user_id=current_user.id, user_name=current_user.name)
         dbmodels.add_to_datebase(review)
 
         return redirect(url_for('profile_info'))
